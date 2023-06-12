@@ -20,6 +20,7 @@ public class UserClient {
         int code = response.statusCode();
         if (code == 200) {
             String userToken = response.jsonPath().getString("accessToken");
+            //TODO удалить вывод токена
             System.out.println("Token = " + userToken);
 
             given().header("Authorization", userToken).and()
