@@ -19,7 +19,7 @@ public class CreateUserTest {
 
     @After
     public void deleteUser() {
-        String json = "{\"email\": \"kaktus@yandex.ru\", \"password\": \"pass12345\"}";
+        String json = "{\"email\": \"kit-kat@yandex.ru\", \"password\": \"pass12345\"}";
         UserClient userClient = new UserClient();
         userClient.deleteUser(json);
     }
@@ -41,7 +41,7 @@ public class CreateUserTest {
     @Description("Проверка статус-кода и тела ответа при создании уникального пользователя")
     public void checkCreateUniqueUser() {
         Response response = sendRequestCreateUser(
-            "{\"email\": \"kaktus@yandex.ru\", \"password\": \"pass12345\", \"name\": \"Kaktus\"}");
+            "{\"email\": \"kit-kat@yandex.ru\", \"password\": \"pass12345\", \"name\": \"Kit-kat\"}");
         response.then().assertThat().statusCode(200)
             .and()
             .body("success", equalTo(true));
@@ -52,9 +52,9 @@ public class CreateUserTest {
     @Description("Проверка статус-кода и тела ответа при создании пользователя, который уже зарегистрирован")
     public void checkCreateTwoIdenticalUsers() {
         sendRequestCreateUser(
-            "{\"email\": \"kaktus@yandex.ru\", \"password\": \"pass12345\", \"name\": \"Kaktus\"}");
+            "{\"email\": \"kit-kat@yandex.ru\", \"password\": \"pass12345\", \"name\": \"Kit-kat\"}");
         Response response = sendRequestCreateUser(
-            "{\"email\": \"kaktus@yandex.ru\", \"password\": \"pass12345\", \"name\": \"Kaktus\"}");
+            "{\"email\": \"kit-kat@yandex.ru\", \"password\": \"pass12345\", \"name\": \"Kit-kat\"}");
         checkStatusCodeAndMessage(response, 403, "User already exists");
     }
 
@@ -63,7 +63,7 @@ public class CreateUserTest {
     @Description("Проверка создания пользователя без электронной почты")
     public void checkCreateUserWithoutEmail() {
         Response response = sendRequestCreateUser(
-            "{\"email\": \"\", \"password\": \"pass12345\", \"name\": \"Kaktus\"}");
+            "{\"email\": \"\", \"password\": \"pass12345\", \"name\": \"Kit-kat\"}");
         checkStatusCodeAndMessage(response, 403, "Email, password and name are required fields");
     }
 
@@ -72,7 +72,7 @@ public class CreateUserTest {
     @Description("Проверка создания пользователя без пароля")
     public void checkCreateUserWithoutPassword() {
         Response response = sendRequestCreateUser(
-            "{\"email\": \"kaktus@yandex.ru\", \"password\": \"\", \"name\": \"Kaktus\"}");
+            "{\"email\": \"kit-kat@yandex.ru\", \"password\": \"\", \"name\": \"Kit-kat\"}");
         checkStatusCodeAndMessage(response, 403, "Email, password and name are required fields");
     }
 
@@ -81,7 +81,7 @@ public class CreateUserTest {
     @Description("Проверка создания пользователя без имени")
     public void checkCreateUserWithoutName() {
         Response response = sendRequestCreateUser(
-            "{\"email\": \"kaktus@yandex.ru\", \"password\": \"pass12345\", \"name\": \"\"}");
+            "{\"email\": \"kit-kat@yandex.ru\", \"password\": \"pass12345\", \"name\": \"\"}");
         checkStatusCodeAndMessage(response, 403, "Email, password and name are required fields");
     }
 }

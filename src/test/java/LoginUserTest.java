@@ -15,19 +15,19 @@ public class LoginUserTest {
     @BeforeClass
     public static void setUp() {
         RestAssured.baseURI = "https://stellarburgers.nomoreparties.site/";
-        String json = "{\"email\": \"kaktus@yandex.ru\", \"password\": \"pass12345\", \"name\": \"Kaktus\"}";
+        String json = "{\"email\": \"kit-kat@yandex.ru\", \"password\": \"pass12345\", \"name\": \"Kit-kat\"}";
         UserClient createUser = new UserClient();
         createUser.createUser(json);
     }
 
     @AfterClass
     public static void deleteUser() {
-        String json = "{\"email\": \"kaktus@yandex.ru\", \"password\": \"pass12345\"}";
+        String json = "{\"email\": \"kit-kat@yandex.ru\", \"password\": \"pass12345\"}";
         UserClient userClient = new UserClient();
         userClient.deleteUser(json);
     }
 
-    @Step("Отправка запроса")
+    @Step("Отправка запроса на авторизацию")
     public Response sendPostRequestLoginUser(String json) {
         UserClient logInUser = new UserClient();
         return logInUser.logInUser(json);
@@ -52,7 +52,7 @@ public class LoginUserTest {
     @Description("Проверка логина существующего пользователя")
     public void checkLoginExistingUser() {
         Response response = sendPostRequestLoginUser(
-            "{\"email\": \"kaktus@yandex.ru\", \"password\": \"pass12345\"}");
+            "{\"email\": \"kit-kat@yandex.ru\", \"password\": \"pass12345\"}");
         checkCorrectLogin(response, 200, true);
     }
 
