@@ -6,6 +6,7 @@ import io.restassured.response.Response;
 
 public class UserClient {
 
+   //метод для создания пользователя
     public Response createUser(String json) {
         return given().header("Content-type", "application/json")
             .and()
@@ -14,6 +15,7 @@ public class UserClient {
             .post("/api/auth/register");
     }
 
+    //метод для удаления пользователя
     public void deleteUser(String json) {
         Response response = given().header("Content-type", "application/json").and().body(json)
             .when().post("/api/auth/login");
@@ -28,9 +30,17 @@ public class UserClient {
         }
     }
 
+    //метод для авторизации пользователя
     public Response logInUser(String json) {
         return given().header("Content-type", "application/json").and().body(json).when()
             .post("/api/auth/login");
+    }
+
+    //метод для авторизации пользователя и получения токена
+    public String loginAndGetToken(String json) {
+        Response response = given().header("Content-type", "application/json").and().body(json)
+            .when().post("/api/auth/login");
+            return response.jsonPath().getString("accessToken");
     }
 
 }
