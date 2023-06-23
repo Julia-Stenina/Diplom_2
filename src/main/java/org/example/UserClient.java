@@ -2,11 +2,12 @@ package org.example;
 
 import static io.restassured.RestAssured.given;
 
+import io.qameta.allure.Step;
 import io.restassured.response.Response;
 
 public class UserClient {
 
-   //метод для создания пользователя
+    @Step("Создаём пользователя")
     public Response createUser(String json) {
         return given().header("Content-type", "application/json")
             .and()
@@ -15,7 +16,7 @@ public class UserClient {
             .post("/api/auth/register");
     }
 
-    //метод для удаления пользователя
+    @Step("Удаляем пользователя")
     public void deleteUser(String json) {
         Response response = given().header("Content-type", "application/json").and().body(json)
             .when().post("/api/auth/login");
@@ -28,17 +29,17 @@ public class UserClient {
         }
     }
 
-    //метод для авторизации пользователя
+    @Step("Метод авторизации")
     public Response logInUser(String json) {
         return given().header("Content-type", "application/json").and().body(json).when()
             .post("/api/auth/login");
     }
 
-    //метод для авторизации пользователя и получения токена
+    @Step("Метод для авторизации пользователя и получения токена")
     public String loginAndGetToken(String json) {
         Response response = given().header("Content-type", "application/json").and().body(json)
             .when().post("/api/auth/login");
-            return response.jsonPath().getString("accessToken");
+        return response.jsonPath().getString("accessToken");
     }
 
 }

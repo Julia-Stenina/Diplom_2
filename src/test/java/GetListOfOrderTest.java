@@ -74,6 +74,7 @@ public class GetListOfOrderTest {
             "{\"email\": \"kit-kat@yandex.ru\", \"password\": \"pass12345\"}");
         sendCreateOrderRequest(token, orderJson);
         Response response = sendGetListOfOrderRequest(token);
+
         checkListOfOrder(response);
     }
 
@@ -82,6 +83,7 @@ public class GetListOfOrderTest {
     @Description("Проверка получения заказов неавторизованного пользователя")
     public void checkGettingListOfOrderForNonAuthorizedUser() {
         Response response = sendGetListOfOrderRequest("");
+
         checkStatusCodeAndBody(response, 401, "You should be authorised");
     }
 

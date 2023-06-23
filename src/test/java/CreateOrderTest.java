@@ -66,6 +66,7 @@ public class CreateOrderTest {
             + "}";
         String token = sendPostRequestLoginUserAndGetToken(
             "{\"email\": \"kit-kat@yandex.ru\", \"password\": \"pass12345\"}");
+
         Response response = sendCreateOrderRequest(token, orderJson);
         checkCorrectCreatingOrder(response, 200, true);
     }
@@ -79,6 +80,7 @@ public class CreateOrderTest {
             + "}";
         String token = sendPostRequestLoginUserAndGetToken(
             "{\"email\": \"kit-kat@yandex.ru\", \"password\": \"pass12345\"}");
+
         Response response = sendCreateOrderRequest(token, orderJson);
         checkStatusCodeAndBody(response, 500, "Internal Server Error");
     }
@@ -89,6 +91,7 @@ public class CreateOrderTest {
     public void checkCreateCOrderWithoutIngredients() {
         String token = sendPostRequestLoginUserAndGetToken(
             "{\"email\": \"kit-kat@yandex.ru\", \"password\": \"pass12345\"}");
+
         Response response = sendCreateOrderRequest(token, "");
         checkStatusCodeAndBody(response, 400, "Ingredient ids must be provided");
     }
@@ -104,6 +107,7 @@ public class CreateOrderTest {
         String orderJson = "{\n"
             + "\"ingredients\": [\"61c0c5a71d1f82001bdaaa6d\",\"61c0c5a71d1f82001bdaaa6f\"]\n"
             + "}";
+
         Response response = sendCreateOrderRequest("", orderJson);
         checkStatusCodeAndBody(response, 401, "You should be authorised");
     }

@@ -53,6 +53,7 @@ public class LoginUserTest {
     public void checkLoginExistingUser() {
         Response response = sendPostRequestLoginUser(
             "{\"email\": \"kit-kat@yandex.ru\", \"password\": \"pass12345\"}");
+
         checkCorrectLogin(response, 200, true);
     }
 
@@ -62,6 +63,7 @@ public class LoginUserTest {
     public void checkLoginNonExistentUser() {
         Response response = sendPostRequestLoginUser(
             "{\"email\": \"kaktus_xoxo@yandex.ru\", \"password\": \"pass98765\"}");
+
         checkStatusCodeAndBody(response, 401, "email or password are incorrect");
     }
 }

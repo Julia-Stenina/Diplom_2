@@ -55,6 +55,7 @@ public class CreateUserTest {
             "{\"email\": \"kit-kat@yandex.ru\", \"password\": \"pass12345\", \"name\": \"Kit-kat\"}");
         Response response = sendRequestCreateUser(
             "{\"email\": \"kit-kat@yandex.ru\", \"password\": \"pass12345\", \"name\": \"Kit-kat\"}");
+
         checkStatusCodeAndMessage(response, 403, "User already exists");
     }
 
@@ -64,6 +65,7 @@ public class CreateUserTest {
     public void checkCreateUserWithoutEmail() {
         Response response = sendRequestCreateUser(
             "{\"email\": \"\", \"password\": \"pass12345\", \"name\": \"Kit-kat\"}");
+
         checkStatusCodeAndMessage(response, 403, "Email, password and name are required fields");
     }
 
@@ -73,6 +75,7 @@ public class CreateUserTest {
     public void checkCreateUserWithoutPassword() {
         Response response = sendRequestCreateUser(
             "{\"email\": \"kit-kat@yandex.ru\", \"password\": \"\", \"name\": \"Kit-kat\"}");
+
         checkStatusCodeAndMessage(response, 403, "Email, password and name are required fields");
     }
 
@@ -82,6 +85,7 @@ public class CreateUserTest {
     public void checkCreateUserWithoutName() {
         Response response = sendRequestCreateUser(
             "{\"email\": \"kit-kat@yandex.ru\", \"password\": \"pass12345\", \"name\": \"\"}");
+
         checkStatusCodeAndMessage(response, 403, "Email, password and name are required fields");
     }
 }
