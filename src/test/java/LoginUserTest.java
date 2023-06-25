@@ -5,30 +5,29 @@ import io.qameta.allure.Step;
 import io.qameta.allure.junit4.DisplayName;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
+import org.example.CreateUserPayload;
+import org.example.DeleteUser;
+import org.example.LoginUserPayload;
 import org.example.UserClient;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 
-public class LoginUserTest {
+public class LoginUserTest extends DeleteUser {
+    private String nameValue = "Kit-kat";
+    private String emailValue = "kit-kat@yandex.ru";
+    private String passwordValue = "pass12345";
+    private String wrongEmailValue = "kit-katTtTt@yandex.ru";
 
-    @BeforeClass
-    public static void setUp() {
+    @Before
+    public void setUp() {
+        CreateUserPayload createUserPayload = new CreateUserPayload(emailValue, passwordValue, nameValue);
         RestAssured.baseURI = "https://stellarburgers.nomoreparties.site/";
-        String json = "{\"email\": \"kit-kat@yandex.ru\", \"password\": \"pass12345\", \"name\": \"Kit-kat\"}";
         UserClient createUser = new UserClient();
-        createUser.createUser(json);
-    }
-
-    @AfterClass
-    public static void deleteUser() {
-        String json = "{\"email\": \"kit-kat@yandex.ru\", \"password\": \"pass12345\"}";
-        UserClient userClient = new UserClient();
-        userClient.deleteUser(json);
+        createUser.createUser(createUserPayload);
     }
 
     @Step("Отправка запроса на авторизацию")
-    public Response sendPostRequestLoginUser(String json) {
+    public Response sendPostRequestLoginUser(LoginUserPayload json) {
         UserClient logInUser = new UserClient();
         return logInUser.logInUser(json);
     }
@@ -51,8 +50,8 @@ public class LoginUserTest {
     @DisplayName("Check login existing user")
     @Description("Проверка логина существующего пользователя")
     public void checkLoginExistingUser() {
-        Response response = sendPostRequestLoginUser(
-            "{\"email\": \"kit-kat@yandex.ru\", \"password\": \"pass12345\"}");
+        LoginUserPayload loginUserPayload = new LoginUserPayload(emailValue, passwordValue);
+        Response response = sendPostRequestLoginUser(loginUserPayload);
 
         checkCorrectLogin(response, 200, true);
     }
@@ -61,8 +60,8 @@ public class LoginUserTest {
     @DisplayName("Check login non-existent user")
     @Description("Проверка логина несуществующего пользователя")
     public void checkLoginNonExistentUser() {
-        Response response = sendPostRequestLoginUser(
-            "{\"email\": \"kaktus_xoxo@yandex.ru\", \"password\": \"pass98765\"}");
+        LoginUserPayload loginUserPayload = new LoginUserPayload(wrongEmailValue, passwordValue);
+        Response response = sendPostRequestLoginUser(loginUserPayload);
 
         checkStatusCodeAndBody(response, 401, "email or password are incorrect");
     }

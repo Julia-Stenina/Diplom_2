@@ -8,7 +8,7 @@ import io.restassured.response.Response;
 public class UserClient {
 
     @Step("Создаём пользователя")
-    public Response createUser(String json) {
+    public Response createUser(CreateUserPayload json) {
         return given().header("Content-type", "application/json")
             .and()
             .body(json)
@@ -17,7 +17,7 @@ public class UserClient {
     }
 
     @Step("Удаляем пользователя")
-    public void deleteUser(String json) {
+    public void deleteUser(LoginUserPayload json) {
         Response response = given().header("Content-type", "application/json").and().body(json)
             .when().post("/api/auth/login");
         int code = response.statusCode();
@@ -30,13 +30,13 @@ public class UserClient {
     }
 
     @Step("Метод авторизации")
-    public Response logInUser(String json) {
+    public Response logInUser(LoginUserPayload json) {
         return given().header("Content-type", "application/json").and().body(json).when()
             .post("/api/auth/login");
     }
 
     @Step("Метод для авторизации пользователя и получения токена")
-    public String loginAndGetToken(String json) {
+    public String loginAndGetToken(LoginUserPayload json) {
         Response response = given().header("Content-type", "application/json").and().body(json)
             .when().post("/api/auth/login");
         return response.jsonPath().getString("accessToken");

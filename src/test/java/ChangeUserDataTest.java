@@ -6,6 +6,8 @@ import io.qameta.allure.Step;
 import io.qameta.allure.junit4.DisplayName;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
+import org.example.CreateUserPayload;
+import org.example.LoginUserPayload;
 import org.example.UserClient;
 import org.junit.After;
 import org.junit.Before;
@@ -13,22 +15,31 @@ import org.junit.Test;
 
 public class ChangeUserDataTest {
 
+    private String nameValue = "Kit-kat";
+    private String emailValue = "kit-kat@yandex.ru";
+    private String passwordValue = "pass12345";
+    private String newNameValue = "Pom-Pom";
+    private String newEmailValue = "kapiko@yandex.ru";
+    private String newPasswordValue = "newPass123";
+    LoginUserPayload loginUserPayload = new LoginUserPayload(emailValue, passwordValue);
+
     @Before
     public void setUp() {
+        CreateUserPayload createUserPayload = new CreateUserPayload(emailValue, passwordValue,
+            nameValue);
         RestAssured.baseURI = "https://stellarburgers.nomoreparties.site/";
-        String json = "{\"email\": \"kit-kat@yandex.ru\", \"password\": \"pass12345\", \"name\": \"Kaktus\"}";
         UserClient createUser = new UserClient();
-        createUser.createUser(json);
+        createUser.createUser(createUserPayload);
     }
 
     @After
     public void deleteUser() {
         UserClient userClient = new UserClient();
-        userClient.deleteUser(json);
+        userClient.deleteUser(loginUserPayload);
     }
 
     @Step("Отправка запроса на авторизацию и получение токена")
-    public String sendPostRequestLoginUserAndGetToken(String json) {
+    public String sendPostRequestLoginUserAndGetToken(LoginUserPayload json) {
         UserClient userClient = new UserClient();
         return userClient.loginAndGetToken(json);
     }
@@ -65,40 +76,35 @@ public class ChangeUserDataTest {
             .body("message", equalTo(message));
     }
 
-    private String json;
-
     @Test
     @DisplayName("Check change Email with authorization")
     @Description("Проверка смены электронной почты с авторизацией")
     public void checkChangeEmailWithAuthorization() {
-        String token = sendPostRequestLoginUserAndGetToken(
-            "{\"email\": \"kit-kat@yandex.ru\", \"password\": \"pass12345\"}");
-        Response response = sendPatchRequest(token, "{\"email\": \"kapiko@yandex.ru\"}");
+        String token = sendPostRequestLoginUserAndGetToken(loginUserPayload);
+        Response response = sendPatchRequest(token, "{\"email\": \"" + newEmailValue + "\"}");
 
         checkCorrectChange(response, 200, true);
-        json = "{\"email\": \"kapiko@yandex.ru\", \"password\": \"pass12345\"}";
+        loginUserPayload = new LoginUserPayload(newEmailValue, passwordValue);
     }
 
     @Test
     @DisplayName("Check change Password with authorization")
     @Description("Проверка смены пароля с авторизацией")
     public void checkChangePasswordWithAuthorization() {
-        String token = sendPostRequestLoginUserAndGetToken(
-            "{\"email\": \"kit-kat@yandex.ru\", \"password\": \"pass12345\"}");
-        Response response = sendPatchRequest(token, "{\"password\": \"newPass123\"}");
+        String token = sendPostRequestLoginUserAndGetToken(loginUserPayload);
+        Response response = sendPatchRequest(token, "{\"password\": \"" + newPasswordValue + "\"}");
 
         checkCorrectChange(response, 200, true);
-        json = "{\"email\": \"kit-kat@yandex.ru\", \"password\": \"newPass123\"}";
+        loginUserPayload = new LoginUserPayload(emailValue, newPasswordValue);
     }
 
     @Test
     @DisplayName("Check change Name with authorization")
     @Description("Проверка смены имени пользователя с авторизацией")
     public void checkChangeNameWithAuthorization() {
-        json = "{\"email\": \"kit-kat@yandex.ru\", \"password\": \"pass12345\"}";
-        String token = sendPostRequestLoginUserAndGetToken(json);
+        String token = sendPostRequestLoginUserAndGetToken(loginUserPayload);
 
-        Response response = sendPatchRequest(token, "{\"name\": \"Pom-Pom\"}");
+        Response response = sendPatchRequest(token, "{\"name\": \"" + newNameValue + "\"}");
         checkCorrectChange(response, 200, true);
     }
 
@@ -107,29 +113,28 @@ public class ChangeUserDataTest {
     @Description("Проверка попытки смены электронной почты без авторизаци")
     public void checkChangeEmailWithoutAuthorization() {
         Response response = sendPatchRequestWithoutAuthorization(
-            "{\"email\": \"kapiko@yandex.ru\"}");
+            "{\"email\": \"" + newEmailValue + "\"}");
 
         checkStatusCodeAndBody(response, 401, "You should be authorised");
-        json = "{\"email\": \"kit-kat@yandex.ru\", \"password\": \"pass12345\"}";
     }
 
     @Test
     @DisplayName("Check change Password without authorization")
     @Description("Проверка попытки смены пароля без авторизаци")
     public void checkChangePasswordWithoutAuthorization() {
-        Response response = sendPatchRequestWithoutAuthorization("{\"password\": \"newPass123\"}");
+        Response response = sendPatchRequestWithoutAuthorization(
+            "{\"password\": \"" + newPasswordValue + "\"}");
 
         checkStatusCodeAndBody(response, 401, "You should be authorised");
-        json = "{\"email\": \"kit-kat@yandex.ru\", \"password\": \"pass12345\"}";
     }
 
     @Test
     @DisplayName("Check change Name without authorization")
     @Description("Проверка попытки смены имени без авторизаци")
     public void checkChangeNameWithoutAuthorization() {
-        Response response = sendPatchRequestWithoutAuthorization("{\"name\": \"Pom-Pom\"}");
+        Response response = sendPatchRequestWithoutAuthorization(
+            "{\"name\": \"" + newNameValue + "\"}");
 
         checkStatusCodeAndBody(response, 401, "You should be authorised");
-        json = "{\"email\": \"kit-kat@yandex.ru\", \"password\": \"pass12345\"}";
     }
 }
